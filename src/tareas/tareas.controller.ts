@@ -7,11 +7,14 @@ import {
   Delete,
   Patch,
   Query,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { TareasService } from './tareas.service';
 import { EstadoDeTarea, Tarea } from './tareas.model';
 import { CrearTareaDto } from './dto/crear-tarea.dto';
 import { getFiltrosDeTareas } from './dto/get-filtros-tareas.dto';
+import { tareaEstadosValidationPipe } from './pipes/tarea-estados-validation.pipe';
 
 @Controller('tareas')
 export class TareasController {
@@ -32,6 +35,7 @@ export class TareasController {
   }
 
   @Post()
+  @UsePipes(ValidationPipe)
   CrearTarea(@Body() CrearTareaDto: CrearTareaDto): Tarea {
     return this.tareasService.crearTarea(CrearTareaDto);
   }
@@ -44,7 +48,7 @@ export class TareasController {
   @Patch('/:id/estado')
   actualizarEstadoTarea(
     @Param('id') id: string,
-    @Body('estado') estado: EstadoDeTarea,
+    @Body('estado', tareaEstadosValidationPipe) estado: EstadoDeTarea,
   ): Tarea {
     return this.tareasService.actualizarEstadoTarea(id, estado);
   }
