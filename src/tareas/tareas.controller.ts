@@ -21,7 +21,7 @@ export class TareasController {
   constructor(private tareasService: TareasService) {}
 
   @Get()
-  getTareas(@Query() filtroDto: getFiltrosDeTareas): Tarea[] {
+  getTareas(@Query(ValidationPipe) filtroDto: getFiltrosDeTareas): Tarea[] {
     if (Object.keys(filtroDto).length) {
       return this.tareasService.getTareasConFiltro(filtroDto);
     } else {
