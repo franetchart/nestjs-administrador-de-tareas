@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TareasModule } from './tareas/tareas.module';
-import { TareasService } from './tareas/tareas.service';
+import { TypeOrmModule } from '@nestjs/typeorm/dist';
+import { typeOrmConfig } from './config/typeorm.config';
 
 @Module({
-  imports: [TareasModule],
-  providers: [TareasService],
+  imports: [TareasModule, TypeOrmModule.forRoot(typeOrmConfig)],
+  providers: [],
 })
 export class AppModule {}
