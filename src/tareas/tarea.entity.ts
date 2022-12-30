@@ -1,8 +1,7 @@
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { EstadoDeTarea } from './tareas.model';
-
+import { EstadoDeTarea } from './tarea-estado.enum';
 @Entity()
-export class tarea extends BaseEntity {
+export class Tarea extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

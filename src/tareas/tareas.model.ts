@@ -1,12 +1,12 @@
-export interface Tarea {
-  id: string;
-  titulo: string;
-  descripcion: string;
-  estado: EstadoDeTarea;
-}
+// export interface Tarea {
+//   id: string;
+//   titulo: string;
+//   descripcion: string;
+//   estado: EstadoDeTarea;
+// }
 
-export enum EstadoDeTarea {
-  ABIERTO = 'ABIERTO',
-  EN_PROGRESO = 'EN_PROGRESO',
-  COMPLETADO = 'COMPLETADO',
-}
+// export enum EstadoDeTarea {
+//   ABIERTO = 'ABIERTO',
+//   EN_PROGRESO = 'EN_PROGRESO',
+//   COMPLETADO = 'COMPLETADO',
+// }

@@ -9,47 +9,47 @@ import {
   Query,
   UsePipes,
   ValidationPipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { TareasService } from './tareas.service';
-import { EstadoDeTarea, Tarea } from './tareas.model';
 import { CrearTareaDto } from './dto/crear-tarea.dto';
-import { getFiltrosDeTareas } from './dto/get-filtros-tareas.dto';
 import { tareaEstadosValidationPipe } from './pipes/tarea-estados-validation.pipe';
+import { Tarea } from './tarea.entity';
+import { EstadoDeTarea } from './tarea-estado.enum';
+import { getFiltrosDeTareas } from './dto/get-filtros-tareas.dto';
 
 @Controller('tareas')
 export class TareasController {
   constructor(private tareasService: TareasService) {}
 
   @Get()
-  getTareas(@Query(ValidationPipe) filtroDto: getFiltrosDeTareas): Tarea[] {
-    if (Object.keys(filtroDto).length) {
-      return this.tareasService.getTareasConFiltro(filtroDto);
-    } else {
-      return this.tareasService.getVariasTareas();
-    }
+  getTareas(
+    @Query(ValidationPipe) filtroDto: getFiltrosDeTareas,
+  ): Promise<Tarea[]> {
+    return this.tareasService.getTask(filtroDto);
   }
 
   @Get('/:id')
-  getTareaPorId(@Param('id') id: string): Tarea {
-    return this.tareasService.getTareaPorId(id);
+  getTaskById(@Param('id', ParseIntPipe) id: number): Promise<Tarea> {
+    return this.tareasService.getTaskById(id);
   }
 
   @Post()
   @UsePipes(ValidationPipe)
-  CrearTarea(@Body() CrearTareaDto: CrearTareaDto): Tarea {
-    return this.tareasService.crearTarea(CrearTareaDto);
+  crearTask(@Body() CrearTareaDto: CrearTareaDto): Promise<Tarea> {
+    return this.tareasService.crearTask(CrearTareaDto);
   }
 
   @Delete('/:id')
-  eliminarTarea(@Param('id') id: string): void {
-    this.tareasService.eliminarTarea(id);
+  deleteTask(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.tareasService.deleteTask(id);
   }
 
   @Patch('/:id/estado')
-  actualizarEstadoTarea(
-    @Param('id') id: string,
+  actualizarTaskEstado(
+    @Param('id', ParseIntPipe) id: number,
     @Body('estado', tareaEstadosValidationPipe) estado: EstadoDeTarea,
-  ): Tarea {
-    return this.tareasService.actualizarEstadoTarea(id, estado);
+  ): Promise<Tarea> {
+    return this.tareasService.actualizarTaskEstado(id, estado);
   }
 }

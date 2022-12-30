@@ -1,0 +1,5 @@
+export enum EstadoDeTarea {
+  ABIERTO = 'ABIERTO',
+  EN_PROGRESO = 'EN_PROGRESO',
+  COMPLETADO = 'COMPLETADO',
+}
