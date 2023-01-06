@@ -22,7 +22,7 @@ export class TareasService {
   }
 
   async getTaskById(id: number): Promise<Tarea> {
-    const found = await this.tareaRepository.findOne(id);
+    const found = await this.tareaRepository.findOneBy({ id });
     if (!found) {
       throw new NotFoundException(`Tarea por ID '${id}' no encontrada`);
     }
