@@ -1,6 +1,6 @@
 import { PipeTransform } from '@nestjs/common';
-import { EstadoDeTarea } from '../tareas.model';
 import { BadRequestException } from '@nestjs/common/exceptions';
+import { EstadoDeTarea } from '../tarea-estado.enum';
 
 export class tareaEstadosValidationPipe implements PipeTransform {
   readonly allowedStatuses = [
