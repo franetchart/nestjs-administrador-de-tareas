@@ -10,4 +10,11 @@ export class AuthController {
   ): Promise<void> {
     return this.authService.registro(authCredencialesDto);
   }
+
+  @Post('/ingreso')
+  ingreso(
+    @Body(ValidationPipe) authCredencialesDto: AuthCrecencialesDto,
+  ): Promise<{ accessToken: string }> {
+    return this.authService.ingreso(authCredencialesDto);
+  }
 }

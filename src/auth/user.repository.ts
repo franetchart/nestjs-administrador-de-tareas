@@ -31,7 +31,7 @@ export class UserRepository extends Repository<User> {
     }
   }
 
-  async valudateUserPassword(
+  async validatePassword(
     authCredencialesDto: AuthCrecencialesDto,
   ): Promise<string> {
     const { username, password } = authCredencialesDto;
