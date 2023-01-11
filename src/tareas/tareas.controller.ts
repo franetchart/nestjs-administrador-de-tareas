@@ -10,6 +10,7 @@ import {
   UsePipes,
   ValidationPipe,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { TareasService } from './tareas.service';
 import { CrearTareaDto } from './dto/crear-tarea.dto';
@@ -17,14 +18,19 @@ import { tareaEstadosValidationPipe } from './pipes/tarea-estados-validation.pip
 import { Tarea } from './tarea.entity';
 import { EstadoDeTarea } from './tarea-estado.enum';
 import { getFiltrosDeTareas } from './dto/get-filtros-tareas.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from 'src/auth/get-user.decorator';
+import { User } from 'src/auth/user.entity';
 
 @Controller('tareas')
+@UseGuards(AuthGuard())
 export class TareasController {
   constructor(private tareasService: TareasService) {}
 
   @Get()
   getTareas(
     @Query(ValidationPipe) filtroDto: getFiltrosDeTareas,
+    @GetUser() user: User,
   ): Promise<Tarea[]> {
     return this.tareasService.getTask(filtroDto);
   }
@@ -36,8 +42,11 @@ export class TareasController {
 
   @Post()
   @UsePipes(ValidationPipe)
-  crearTask(@Body() CrearTareaDto: CrearTareaDto): Promise<Tarea> {
-    return this.tareasService.crearTask(CrearTareaDto);
+  crearTask(
+    @Body() CrearTareaDto: CrearTareaDto,
+    @GetUser() user: User,
+  ): Promise<Tarea> {
+    return this.tareasService.crearTask(CrearTareaDto, user);
   }
 
   @Delete('/:id')

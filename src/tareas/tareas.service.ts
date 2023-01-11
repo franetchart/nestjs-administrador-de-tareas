@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Tarea } from './tarea.entity';
 import { EstadoDeTarea } from './tarea-estado.enum';
 import { getFiltrosDeTareas } from './dto/get-filtros-tareas.dto';
+import { User } from 'src/auth/user.entity';
 
 @Injectable()
 export class TareasService {
@@ -29,8 +30,8 @@ export class TareasService {
     return found;
   }
 
-  async crearTask(crearTareaDto: CrearTareaDto): Promise<Tarea> {
-    return this.tareaRepository.crearTask(crearTareaDto);
+  async crearTask(crearTareaDto: CrearTareaDto, user: User): Promise<Tarea> {
+    return this.tareaRepository.crearTask(crearTareaDto, user);
   }
 
   async deleteTask(id: number): Promise<void> {

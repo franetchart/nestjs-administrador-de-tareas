@@ -2,10 +2,12 @@ import {
   BaseEntity,
   Column,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { Tarea } from 'src/tareas/tarea.entity';
 
 @Entity()
 @Unique(['username'])
@@ -19,6 +21,8 @@ export class User extends BaseEntity {
   password: string;
   @Column()
   salt: string;
+  @OneToMany((type) => Tarea, (tarea) => tarea.user, { eager: true })
+  tareas: Tarea[];
 
   async validatePassword(password: string): Promise<boolean> {
     const hash = await bcrypt.hash(password, this.salt);

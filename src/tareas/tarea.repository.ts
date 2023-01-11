@@ -3,6 +3,7 @@ import { Tarea } from './tarea.entity';
 import { CrearTareaDto } from './dto/crear-tarea.dto';
 import { EstadoDeTarea } from './tarea-estado.enum';
 import { getFiltrosDeTareas } from './dto/get-filtros-tareas.dto';
+import { User } from 'src/auth/user.entity';
 
 @EntityRepository(Tarea)
 export class TareaRepository extends Repository<Tarea> {
@@ -24,13 +25,15 @@ export class TareaRepository extends Repository<Tarea> {
     return tareas;
   }
 
-  async crearTask(crearTareaDto: CrearTareaDto): Promise<Tarea> {
+  async crearTask(crearTareaDto: CrearTareaDto, user: User): Promise<Tarea> {
     const { titulo, descripcion } = crearTareaDto;
     const tarea = new Tarea();
     tarea.titulo = titulo;
     tarea.descripcion = descripcion;
     tarea.estado = EstadoDeTarea.ABIERTO;
+    tarea.user = user;
     await tarea.save();
+    delete tarea.user;
     return tarea;
   }
 }
