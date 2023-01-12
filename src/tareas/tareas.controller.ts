@@ -32,7 +32,7 @@ export class TareasController {
     @Query(ValidationPipe) filtroDto: getFiltrosDeTareas,
     @GetUser() user: User,
   ): Promise<Tarea[]> {
-    return this.tareasService.getTask(filtroDto);
+    return this.tareasService.getTask(filtroDto, user);
   }
 
   @Get('/:id')

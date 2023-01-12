@@ -18,8 +18,8 @@ export class TareasService {
     private tareaRepository: TareaRepository,
   ) {}
 
-  async getTask(filtroDto: getFiltrosDeTareas): Promise<Tarea[]> {
-    return this.tareaRepository.getTask(filtroDto);
+  async getTask(filtroDto: getFiltrosDeTareas, user: User): Promise<Tarea[]> {
+    return this.tareaRepository.getTask(filtroDto, user);
   }
 
   async getTaskById(id: number): Promise<Tarea> {

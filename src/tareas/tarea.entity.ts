@@ -20,4 +20,6 @@ export class Tarea extends BaseEntity {
   estado: EstadoDeTarea;
   @ManyToOne((type) => User, (user) => user.tareas, { eager: false })
   user: User;
+  @Column()
+  userId: number;
 }
