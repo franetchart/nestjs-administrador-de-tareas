@@ -22,8 +22,10 @@ export class TareasService {
     return this.tareaRepository.getTask(filtroDto, user);
   }
 
-  async getTaskById(id: number): Promise<Tarea> {
-    const found = await this.tareaRepository.findOneBy({ id });
+  async getTaskById(id: number, user: User): Promise<Tarea> {
+    const found = await this.tareaRepository.findOne({
+      where: { id, userId: user.id },
+    });
     if (!found) {
       throw new NotFoundException(`Tarea por ID '${id}' no encontrada`);
     }
@@ -34,8 +36,8 @@ export class TareasService {
     return this.tareaRepository.crearTask(crearTareaDto, user);
   }
 
-  async deleteTask(id: number): Promise<void> {
-    const result = await this.tareaRepository.delete(id);
+  async deleteTask(id: number, user: User): Promise<void> {
+    const result = await this.tareaRepository.delete({ id, userId: user.id });
     if (result.affected === 0) {
       throw new NotFoundException(`Tarea por ID '${id}' no encontrada`);
     }
@@ -43,56 +45,11 @@ export class TareasService {
   async actualizarTaskEstado(
     id: number,
     estado: EstadoDeTarea,
+    user: User,
   ): Promise<Tarea> {
-    const tarea = await this.getTaskById(id);
+    const tarea = await this.getTaskById(id, user);
     tarea.estado = estado;
     await tarea.save();
     return tarea;
   }
-
-  // private tareas: Tarea[] = [];
-  // getVariasTareas(): Tarea[] {
-  //   return this.tareas;
-  // }
-  // getTareasConFiltro(filtroDto: getFiltrosDeTareas): Tarea[] {
-  //   const { estado, buscar } = filtroDto;
-  //   let tareas = this.getVariasTareas();
-  //   if (estado) {
-  //     tareas = tareas.filter((tarea) => tarea.estado === estado);
-  //   }
-  //   if (buscar) {
-  //     tareas = tareas.filter(
-  //       (tarea) =>
-  //         tarea.titulo.includes(buscar) || tarea.descripcion.includes(buscar),
-  //     );
-  //   }
-  //   return tareas;
-  // }
-  // getTareaPorId(id: string): Tarea {
-  //   const found = this.tareas.find((tareas) => tareas.id === id);
-  //   if (!found) {
-  //     throw new NotFoundException(`Tarea por ID '${id}' no encontrada`);
-  //   }
-  //   return found;
-  // }
-  // crearTarea(crearTareaDto: CrearTareaDto): Tarea {
-  //   const { titulo, descripcion } = crearTareaDto;
-  //   const tarea: Tarea = {
-  //     id: uuidv4(),
-  //     titulo,
-  //     descripcion,
-  //     estado: EstadoDeTarea.ABIERTO,
-  //   };
-  //   this.tareas.push(tarea);
-  //   return tarea;
-  // }
-  // eliminarTarea(id: string): void {
-  //   const found = this.getTareaPorId(id);
-  //   this.tareas = this.tareas.filter((tarea) => tarea.id !== found.id);
-  // }
-  // actualizarEstadoTarea(id: string, estado: EstadoDeTarea): Tarea {
-  //   const tarea = this.getTareaPorId(id);
-  //   tarea.estado = estado;
-  //   return tarea;
-  // }
 }

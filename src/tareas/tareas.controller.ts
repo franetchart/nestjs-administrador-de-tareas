@@ -36,8 +36,11 @@ export class TareasController {
   }
 
   @Get('/:id')
-  getTaskById(@Param('id', ParseIntPipe) id: number): Promise<Tarea> {
-    return this.tareasService.getTaskById(id);
+  getTaskById(
+    @Param('id', ParseIntPipe) id: number,
+    @GetUser() user: User,
+  ): Promise<Tarea> {
+    return this.tareasService.getTaskById(id, user);
   }
 
   @Post()
@@ -50,15 +53,19 @@ export class TareasController {
   }
 
   @Delete('/:id')
-  deleteTask(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    return this.tareasService.deleteTask(id);
+  deleteTask(
+    @Param('id', ParseIntPipe) id: number,
+    @GetUser() user: User,
+  ): Promise<void> {
+    return this.tareasService.deleteTask(id, user);
   }
 
   @Patch('/:id/estado')
   actualizarTaskEstado(
     @Param('id', ParseIntPipe) id: number,
     @Body('estado', tareaEstadosValidationPipe) estado: EstadoDeTarea,
+    @GetUser() user: User,
   ): Promise<Tarea> {
-    return this.tareasService.actualizarTaskEstado(id, estado);
+    return this.tareasService.actualizarTaskEstado(id, estado, user);
   }
 }
