@@ -9,47 +9,63 @@ import {
   Query,
   UsePipes,
   ValidationPipe,
+  ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { TareasService } from './tareas.service';
-import { EstadoDeTarea, Tarea } from './tareas.model';
 import { CrearTareaDto } from './dto/crear-tarea.dto';
-import { getFiltrosDeTareas } from './dto/get-filtros-tareas.dto';
 import { tareaEstadosValidationPipe } from './pipes/tarea-estados-validation.pipe';
+import { Tarea } from './tarea.entity';
+import { EstadoDeTarea } from './tarea-estado.enum';
+import { getFiltrosDeTareas } from './dto/get-filtros-tareas.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from 'src/auth/get-user.decorator';
+import { User } from 'src/auth/user.entity';
 
 @Controller('tareas')
+@UseGuards(AuthGuard())
 export class TareasController {
   constructor(private tareasService: TareasService) {}
 
   @Get()
-  getTareas(@Query(ValidationPipe) filtroDto: getFiltrosDeTareas): Tarea[] {
-    if (Object.keys(filtroDto).length) {
-      return this.tareasService.getTareasConFiltro(filtroDto);
-    } else {
-      return this.tareasService.getVariasTareas();
-    }
+  getTareas(
+    @Query(ValidationPipe) filtroDto: getFiltrosDeTareas,
+    @GetUser() user: User,
+  ): Promise<Tarea[]> {
+    return this.tareasService.getTask(filtroDto, user);
   }
 
   @Get('/:id')
-  getTareaPorId(@Param('id') id: string): Tarea {
-    return this.tareasService.getTareaPorId(id);
+  getTaskById(
+    @Param('id', ParseIntPipe) id: number,
+    @GetUser() user: User,
+  ): Promise<Tarea> {
+    return this.tareasService.getTaskById(id, user);
   }
 
   @Post()
   @UsePipes(ValidationPipe)
-  CrearTarea(@Body() CrearTareaDto: CrearTareaDto): Tarea {
-    return this.tareasService.crearTarea(CrearTareaDto);
+  crearTask(
+    @Body() CrearTareaDto: CrearTareaDto,
+    @GetUser() user: User,
+  ): Promise<Tarea> {
+    return this.tareasService.crearTask(CrearTareaDto, user);
   }
 
   @Delete('/:id')
-  eliminarTarea(@Param('id') id: string): void {
-    this.tareasService.eliminarTarea(id);
+  deleteTask(
+    @Param('id', ParseIntPipe) id: number,
+    @GetUser() user: User,
+  ): Promise<void> {
+    return this.tareasService.deleteTask(id, user);
   }
 
   @Patch('/:id/estado')
-  actualizarEstadoTarea(
-    @Param('id') id: string,
+  actualizarTaskEstado(
+    @Param('id', ParseIntPipe) id: number,
     @Body('estado', tareaEstadosValidationPipe) estado: EstadoDeTarea,
-  ): Tarea {
-    return this.tareasService.actualizarEstadoTarea(id, estado);
+    @GetUser() user: User,
+  ): Promise<Tarea> {
+    return this.tareasService.actualizarTaskEstado(id, estado, user);
   }
 }
